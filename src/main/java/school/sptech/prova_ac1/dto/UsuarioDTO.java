@@ -1,18 +1,10 @@
-package school.sptech.prova_ac1;
+package school.sptech.prova_ac1.dto;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import org.dbunit.dataset.datatype.StringIgnoreCaseDataType;
+import school.sptech.prova_ac1.Usuario;
 
 import java.time.LocalDate;
 
-@Entity
-public class Usuario {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UsuarioDTO {
     private Long id;
 
     private String nome;
@@ -23,7 +15,9 @@ public class Usuario {
 
     private LocalDate dataNascimento;
 
-    public Usuario(Long id, String nome, String email, String senha, LocalDate dataNascimento) {
+
+
+    public UsuarioDTO(Long id, String nome, String email, String senha, LocalDate dataNascimento) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -31,8 +25,16 @@ public class Usuario {
         this.dataNascimento = dataNascimento;
     }
 
-    public Usuario() {
+    public UsuarioDTO() {
     }
+
+    public UsuarioDTO(Usuario usuario) {
+        this.nome = usuario.getNome();
+        this.email = usuario.getEmail();
+        this.senha = usuario.getSenha();
+        this.dataNascimento = usuario.getDataNascimento();
+    }
+
 
     public Long getId() {
         return id;
