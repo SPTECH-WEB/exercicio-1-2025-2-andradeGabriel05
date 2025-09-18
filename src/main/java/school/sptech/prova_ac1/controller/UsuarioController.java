@@ -1,11 +1,13 @@
 package school.sptech.prova_ac1.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import school.sptech.prova_ac1.Usuario;
-import school.sptech.prova_ac1.UsuarioService;
+import school.sptech.prova_ac1.entities.Usuario;
+import school.sptech.prova_ac1.services.UsuarioService;
 import school.sptech.prova_ac1.dto.UsuarioDTO;
 
 import java.net.URI;
@@ -23,6 +25,9 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity<List<Usuario>> buscarTodos() {
         List<Usuario> usuarios = usuarioService.buscarTodos();
+        if(usuarios.size() == 0) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(usuarios);
     }
 
@@ -30,35 +35,60 @@ public class UsuarioController {
     public ResponseEntity<UsuarioDTO> criar(@RequestBody UsuarioDTO usuarioDTO) {
         usuarioDTO = usuarioService.criar(usuarioDTO);
 
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuarioDTO).toUri();
+        if(usuarioDTO == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuarioDTO).toUri();
 
         return ResponseEntity.created(uri).body(usuarioDTO);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Usuario>> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Optional<Usuario>> buscarPorId(@PathVariable Integer id) {
         Optional<Usuario> usuario = usuarioService.buscarPorId(id);
+        if(usuario.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(usuario);
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        usuarioService.deletar(id);
-        return ResponseEntity.ok().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
+        Boolean response = usuarioService.deletar(id);
+
+        if(response) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/date/{date}")
-    public ResponseEntity<List<Usuario>> buscarPorDataNascimento(@PathVariable LocalDate date) {
-        List<Usuario> user = usuarioService.buscarPorDataNascimento(date);
+    @GetMapping("/filtro-data")
+    public ResponseEntity<List<Usuario>> buscarPorDataNascimento(@RequestParam LocalDate nascimento) {
+        if(nascimento == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<Usuario> user = usuarioService.buscarPorDataNascimento(nascimento);
+        System.out.println("Found " + user.size() + " users");
+        if(user.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
         return ResponseEntity.ok(user);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioDTO> atualizar(
-            @PathVariable Long id,
+            @PathVariable Integer id,
             @RequestBody UsuarioDTO usuario
     ) {
         usuario = usuarioService.atualizar(id, usuario);
+
+
+        if(usuario == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
 
         return ResponseEntity.ok(usuario);
     }

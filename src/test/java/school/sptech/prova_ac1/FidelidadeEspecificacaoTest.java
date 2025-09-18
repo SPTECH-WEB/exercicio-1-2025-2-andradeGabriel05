@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import school.sptech.prova_ac1.entities.Usuario;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;

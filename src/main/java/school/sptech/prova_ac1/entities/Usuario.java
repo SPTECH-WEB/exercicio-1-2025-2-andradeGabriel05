@@ -1,11 +1,7 @@
-package school.sptech.prova_ac1;
+package school.sptech.prova_ac1.entities;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import org.dbunit.dataset.datatype.StringIgnoreCaseDataType;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
@@ -13,32 +9,37 @@ import java.time.LocalDate;
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String nome;
 
+    @Column(unique = true)
     private String email;
 
     private String senha;
 
+    @Column(unique = true)
+    private String cpf;
+
     private LocalDate dataNascimento;
 
-    public Usuario(Long id, String nome, String email, String senha, LocalDate dataNascimento) {
+    public Usuario(Integer id, String nome, String email, String senha, String cpf, LocalDate dataNascimento) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.senha = senha;
+        this.cpf = cpf;
         this.dataNascimento = dataNascimento;
     }
 
     public Usuario() {
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -72,5 +73,13 @@ public class Usuario {
 
     public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 }

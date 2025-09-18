@@ -122,7 +122,7 @@ public class UsuarioCadastroFixture {
             String dataNascimento
     ) {
         try {
-            Class<?> clazz = Class.forName("school.sptech.prova_ac1.Usuario");
+            Class<?> clazz = Class.forName("school.sptech.prova_ac1.entities.Usuario");
             Object usuario = clazz.getDeclaredConstructor().newInstance();
 
             Method setNome = clazz.getMethod("setNome", String.class);
